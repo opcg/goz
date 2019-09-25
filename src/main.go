@@ -17,13 +17,22 @@ func main() {
 	}
 }
 
+type Env struct {
+	starlark.HasAttrs
+}
+
+func (t *Env) Append(key, value string) {
+	fmt.Printf("Got %s %s", key, value)
+}
 
 func execConfig(path string)  {
 
-	env = make(map(string[string]))
+	env := Env{}
+
+	args := starlark.Tuple{env}
 
 	// Execute Starlark program in a file.
-	thread := &starlark.Thread{Name: "my thread"}
+	thread := &starlark.Thread{Name: "package thread"}
 	globals, err := starlark.ExecFile(thread, path, nil, nil)
 	if err != nil {  }
 
@@ -31,8 +40,8 @@ func execConfig(path string)  {
 	commands := globals["commands"]
 
 	// Call Starlark function from Go.
-	v, err := starlark.Call(thread, commands, nil, nil)
+	v, err := starlark.Call(thread, commands, args, nil)
 	if err != nil {  }
-	fmt.Printf("hello() = %v\n", v)
+	fmt.Printf("commands() = %v\n", v)
 
 }

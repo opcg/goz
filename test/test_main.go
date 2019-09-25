@@ -1,9 +1,10 @@
 package main
 
 import "testing"
+import "../src/test.go"
 
-func Test(t *testing.T) {
-	got := Hello()
+func TestExec(t *testing.T) {
+	got := execConfig("")
 	want := "Hello, world"
 
 	if got != want {
