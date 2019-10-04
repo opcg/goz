@@ -1,0 +1,28 @@
+# https://github.com/DISCOOS/vagrant-alpine-example/blob/master/Vagrantfile
+
+# vagrant-alpine
+# https://github.com/maier/vagrant-alpine
+
+# vagrant-docker-compose
+# https://github.com/leighmcculloch/vagrant-docker-compose
+
+required_plugins = %w( vagrant-docker-compose )
+required_plugins.each do |plugin|
+   system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
+end
+
+# https://github.com/leighmcculloch/vagrant-docker-compose/blob/master/example/Vagrantfile
+Vagrant.configure("2") do |config|
+
+    config.vm.box = "ubuntu/bionic64"
+
+    ratel = 8080
+    server = 8000
+
+    config.vm.network(:forwarded_port, guest: ratel, host: ratel)
+    config.vm.network(:forwarded_port, guest: server, host: server)
+
+    config.vm.provision :docker
+    config.vm.provision :docker_compose, yml: "/vagrant/docker-compose.yml", rebuild: true, run: "always"
+
+end
